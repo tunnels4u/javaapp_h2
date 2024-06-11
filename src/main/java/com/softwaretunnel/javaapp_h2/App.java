@@ -13,5 +13,6 @@ public class App
     {
         System.out.println( "Hello World!" );
         h2Interaction.createDatabase();
+        h2Interaction.createSchema();
     }
 }

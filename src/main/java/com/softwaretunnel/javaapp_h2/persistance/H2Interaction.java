@@ -35,5 +35,14 @@ public class H2Interaction {
 		}
 	}
 	
+	public void createSchema() {
+		try {
+		String dir = System.getProperty("user.dir");
+		connection.createStatement().execute("RUNSCRIPT FROM '"+ dir.toString()+"/src/main/resources/h2init.sql'");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 }
