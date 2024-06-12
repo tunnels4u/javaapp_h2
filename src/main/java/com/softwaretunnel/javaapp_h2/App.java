@@ -21,7 +21,7 @@ public class App {
 	public static void createGUI() {
 		JFrame f = new JFrame("Welcome to Java H2 Tunnel.");
 		final JTextField tf = new JTextField();
-		//tf.setBounds(50, 50, 150, 20);
+		tf.setBounds(50, 50, 150, 20);
 		JButton b = new JButton("Create H2 Database");
 		b.setBounds(50, 100, 95, 30);
 		b.addActionListener(new ActionListener() {
