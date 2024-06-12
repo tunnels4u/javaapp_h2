@@ -35,4 +35,12 @@ public class AppTest
     {
         assertTrue( true );
     }
+    
+    public void createDatabase() {
+    	
+    }
+    
+    public void dropSchema() {
+    	
+    }
 }
