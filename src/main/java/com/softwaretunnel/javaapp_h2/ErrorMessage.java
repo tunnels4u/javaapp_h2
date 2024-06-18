@@ -1,9 +1,14 @@
 package com.softwaretunnel.javaapp_h2;
 
 public enum ErrorMessage {
-CONNECTION_FAILED("Connection could not be made to the database, check logs");
+	DB_CREATION_FAILED("Database could not be created, check logs"),
+	SCHEMA_CREATION_FAILED("Schema could not be created, check logs"),
+	SCHEMA_DROP_FAILED("Schema could not be dropped, check logs");
+
+	public final String message;
 	
-	 ErrorMessage(String message) {
-		
+	ErrorMessage(String message) {
+        this.message = message;
+
 	}
 }
