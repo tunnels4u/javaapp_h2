@@ -24,6 +24,8 @@ public class App {
 
 	private H2Interaction h2Interaction = null;
 	JFrame frame = new JFrame("Welcome to Java H2 Tunnel.");
+	JButton dropSchemaButton;
+	JButton createSchemaButton;
 
 	public static void main(String[] args) {
 		new App().createGUI();
@@ -35,8 +37,11 @@ public class App {
 		jl.setForeground(Color.WHITE);
 		JButton createDBButton = createDatabaseButton(jl);
 		frame.add(createDBButton);
-		JButton createSchemaButton = createSchemaButton(jl);
+		this.dropSchemaButton= dropSchemaButton(jl);
+		dropSchemaButton.setVisible(false);
+		this.createSchemaButton = createSchemaButton(jl);
 		frame.add(createSchemaButton);
+		frame.add(dropSchemaButton);
 		frame.add(jl);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.addWindowListener(getWindowListener());
@@ -68,9 +73,8 @@ public class App {
 		schemaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (createSchema(jl)) {
-					frame.remove(schemaButton);
-					frame.add(dropSchemaButton(jl));
-					refreshFrame();
+					schemaButton.setVisible(false);
+					dropSchemaButton.setVisible(true);
 				}
 			}
 		});
@@ -78,14 +82,17 @@ public class App {
 	}
 
 	public JButton dropSchemaButton(JLabel jl) {
-		JButton b = new JButton("Drop Database Schema ");
-		b.setBounds(50, 150, 200, 30);
-		b.addActionListener(new ActionListener() {
+		JButton dropSchemaButton = new JButton("Drop Database Schema ");
+		dropSchemaButton.setBounds(50, 150, 200, 30);
+		dropSchemaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dropSchema(jl);
+				if(dropSchema(jl)) {
+					dropSchemaButton.setVisible(false);
+					createSchemaButton.setVisible(true);
+				}
 			}
 		});
-		return b;
+		return dropSchemaButton;
 	}
 
 	public void createDatabase(JLabel jl) {
@@ -108,14 +115,15 @@ public class App {
 		}
 	}
 
-	public void dropSchema(JLabel jl) {
+	public boolean dropSchema(JLabel jl) {
 		try {
 			h2Interaction.dropSchema();
-			;
+			jl.setText(Properties.SCHEMA_NAME + " Schema dropped ");
+			return true;
 		} catch (Exception exception) {
 			jl.setText(ErrorMessage.SCHEMA_DROP_FAILED.message);
+			return false;
 		}
-		jl.setText("Schema dropped with file ::" + Properties.H2_SCHEMA);
 	}
 
 	public void createBackground(JFrame jf) {

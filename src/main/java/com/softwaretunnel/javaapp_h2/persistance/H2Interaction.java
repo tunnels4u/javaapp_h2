@@ -52,7 +52,7 @@ public class H2Interaction {
 	public void dropSchema() throws Exception {
 		try {
 
-			connection.createStatement().execute("DROP SCHEMA " + Properties.SCHEMA_NAME);
+			connection.createStatement().execute("DROP SCHEMA " + Properties.SCHEMA_NAME +" CASCADE");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
