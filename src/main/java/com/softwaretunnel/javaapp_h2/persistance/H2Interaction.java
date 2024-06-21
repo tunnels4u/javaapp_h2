@@ -1,6 +1,8 @@
 package com.softwaretunnel.javaapp_h2.persistance;
 
+import java.io.File;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.h2.jdbcx.JdbcDataSource;
@@ -16,16 +18,29 @@ public class H2Interaction {
 
 	}
 
+	public static boolean doesH2DBExists() {
+		String path = Properties.H2_PATH + "h2db.mv.db";
+		System.out.println(path);
+		File dbFile = new File(path);
+		if (dbFile.exists()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public static H2Interaction getH2Interaction() throws Exception {
 		try {
-			connection = createDatabaseAndConnection();
+			if (connection == null) {
+				connection = h2Interaction.createDatabaseAndConnection();
+			}
 		} catch (Exception e) {
 			throw e;
 		}
 		return h2Interaction;
 	}
 
-	public static Connection createDatabaseAndConnection() throws Exception {
+	public Connection createDatabaseAndConnection() throws Exception {
 		JdbcDataSource ds = new JdbcDataSource();
 		Connection newConnection = null;
 		ds.setURL("jdbc:h2:" + Properties.H2_PATH + "h2db");
@@ -52,11 +67,26 @@ public class H2Interaction {
 	public void dropSchema() throws Exception {
 		try {
 
-			connection.createStatement().execute("DROP SCHEMA " + Properties.SCHEMA_NAME +" CASCADE");
+			connection.createStatement().execute("DROP SCHEMA " + Properties.SCHEMA_NAME + " CASCADE");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+
+	public boolean doesSchemaExists() throws Exception {
+		try {
+
+			ResultSet rs = connection.createStatement().executeQuery(
+					"SELECT * FROM INFORMATION_SCHEMA.SCHEMATA  WHERE SCHEMA_NAME = '" + Properties.SCHEMA_NAME + "'");
+			if (rs.next() && rs.getString("SCHEMA_NAME").equals(Properties.SCHEMA_NAME)) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return false;
 	}
 
 	public void releaseResources() {

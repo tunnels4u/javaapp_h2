@@ -5,5 +5,5 @@ public class Properties {
 	public static String H2_PATH = PROJECT_RESOURCE_PATH + "h2/";
 	public static String H2_SCHEMA = PROJECT_RESOURCE_PATH + "h2/h2init.sql";
 	public static String IMAGES_PATH = PROJECT_RESOURCE_PATH + "images/";
-	public static String SCHEMA_NAME = "tunneldataschema";
+	public static String SCHEMA_NAME = "TUNNELDATASCHEMA";
 }

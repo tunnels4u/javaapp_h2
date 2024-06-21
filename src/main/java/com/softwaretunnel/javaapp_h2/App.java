@@ -22,10 +22,10 @@ import com.softwaretunnel.javaapp_h2.persistance.H2Interaction;
  */
 public class App {
 
-	private H2Interaction h2Interaction = null;
 	JFrame frame = new JFrame("Welcome to Java H2 Tunnel.");
 	JButton dropSchemaButton;
 	JButton createSchemaButton;
+	JButton createDBButton;
 
 	public static void main(String[] args) {
 		new App().createGUI();
@@ -35,9 +35,9 @@ public class App {
 		final JLabel jl = new JLabel();
 		jl.setBounds(50, 50, 1000, 20);
 		jl.setForeground(Color.WHITE);
-		JButton createDBButton = createDatabaseButton(jl);
+		createDBButton = createDatabaseButton(jl);
 		frame.add(createDBButton);
-		this.dropSchemaButton= dropSchemaButton(jl);
+		this.dropSchemaButton = dropSchemaButton(jl);
 		dropSchemaButton.setVisible(false);
 		this.createSchemaButton = createSchemaButton(jl);
 		frame.add(createSchemaButton);
@@ -48,23 +48,49 @@ public class App {
 		createBackground(frame);
 		frame.setSize(800, 800);
 		frame.setLayout(null);
+		renderFrame(jl);
 		frame.setVisible(true);
 	}
-	
+
+	public void renderFrame(JLabel jl) {
+		try {
+			if (H2Interaction.doesH2DBExists()) {
+				createDBButton.setVisible(false);
+				if (H2Interaction.getH2Interaction().doesSchemaExists()) {
+					dropSchemaButton.setVisible(true);
+					createSchemaButton.setVisible(false);
+				} else {
+					dropSchemaButton.setVisible(false);
+					createSchemaButton.setVisible(true);
+				}
+			} else {
+				createDBButton.setVisible(true);
+			}
+
+		} catch (Exception e) {
+			jl.setText(ErrorMessage.FRAME_RENDERING_FAILED.message);
+		}
+	}
+
 	public void refreshFrame() {
-		//frame.revalidate();
+		// frame.revalidate();
 		frame.repaint();
 	}
 
 	public JButton createDatabaseButton(JLabel jl) {
-		JButton b = new JButton("Create H2 Database");
-		b.setBounds(50, 100, 150, 30);
-		b.addActionListener(new ActionListener() {
+		JButton createDBButton = new JButton("Create H2 Database");
+		createDBButton.setBounds(50, 100, 150, 30);
+		createDBButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				createDatabase(jl);
+				if (createDatabase(jl)) {
+					createSchemaButton.setVisible(true);
+					createDBButton.setVisible(false);
+				} else {
+					createDBButton.setVisible(true);
+				}
 			}
 		});
-		return b;
+		return createDBButton;
 	}
 
 	public JButton createSchemaButton(JLabel jl) {
@@ -86,7 +112,7 @@ public class App {
 		dropSchemaButton.setBounds(50, 150, 200, 30);
 		dropSchemaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(dropSchema(jl)) {
+				if (dropSchema(jl)) {
 					dropSchemaButton.setVisible(false);
 					createSchemaButton.setVisible(true);
 				}
@@ -95,18 +121,20 @@ public class App {
 		return dropSchemaButton;
 	}
 
-	public void createDatabase(JLabel jl) {
+	public boolean createDatabase(JLabel jl) {
 		try {
-			h2Interaction = H2Interaction.getH2Interaction();
+			H2Interaction.getH2Interaction();
 			jl.setText("Database Created at :: " + Properties.H2_PATH);
+			return true;
 		} catch (Exception exception) {
 			jl.setText(ErrorMessage.DB_CREATION_FAILED.message);
+			return false;
 		}
 	}
 
 	public boolean createSchema(JLabel jl) {
 		try {
-			h2Interaction.createSchema();
+			H2Interaction.getH2Interaction().createSchema();
 			jl.setText("Schema Created with file ::" + Properties.H2_SCHEMA);
 			return true;
 		} catch (Exception exception) {
@@ -117,7 +145,7 @@ public class App {
 
 	public boolean dropSchema(JLabel jl) {
 		try {
-			h2Interaction.dropSchema();
+			H2Interaction.getH2Interaction().dropSchema();
 			jl.setText(Properties.SCHEMA_NAME + " Schema dropped ");
 			return true;
 		} catch (Exception exception) {
@@ -144,7 +172,12 @@ public class App {
 
 			@Override
 			public void windowClosed(WindowEvent e) {
-				h2Interaction.releaseResources();
+				try {
+					H2Interaction.getH2Interaction().releaseResources();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
 			}
 

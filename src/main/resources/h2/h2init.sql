@@ -1,5 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS tunneldataschema;
-SET SCHEMA tunneldataschema;
+CREATE SCHEMA IF NOT EXISTS TUNNELDATASCHEMA;
+SET SCHEMA TUNNELDATASCHEMA;
 CREATE TABLE Users (ID int NOT NULL,
                     First_Name VARCHAR(100) NOT NULL, 
                     Last_Name VARCHAR(100) NOT NULL,
