@@ -132,6 +132,24 @@ public class H2Interaction {
 				statement.addBatch("UPDATE TUNNELDATASCHEMA.EMPLOYEE SET " + "First_Name = '" + employee.getFirstName()
 						+ "'," + "Last_Name = '" + employee.getLastName() + "'" + "WHERE ID = " + employee.getID());
 
+			}
+			statement.executeBatch();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
+	public void deleteEmployeeRecords(List<Employee> employeeList) throws Exception {
+
+		try {
+			Statement statement = connection.createStatement();
+			for (Employee employee : employeeList) {
+
+				statement.addBatch("DELETE FROM TUNNELDATASCHEMA.EMPLOYEE WHERE ID = " + employee.getID());
+
 				System.out.println(statement);
 			}
 			statement.executeBatch();

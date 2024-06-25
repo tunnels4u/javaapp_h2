@@ -47,6 +47,7 @@ public class AppTest extends TestCase {
 		try {
 			H2Interaction h2Interaction = H2Interaction.getH2Interaction();
 			assertTrue(H2Interaction.doesH2DBExists());
+			h2Interaction.dropDatabase();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -59,6 +60,7 @@ public class AppTest extends TestCase {
 			h2Interaction.createSchema();
 			h2Interaction.dropSchema();
 			assertFalse(h2Interaction.doesSchemaExists());
+			h2Interaction.dropDatabase();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -71,6 +73,7 @@ public class AppTest extends TestCase {
 			h2Interaction.createSchema();
 			assertTrue(h2Interaction.doesSchemaExists());
 			h2Interaction.dropSchema();
+			h2Interaction.dropDatabase();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -96,6 +99,7 @@ public class AppTest extends TestCase {
 			assertTrue(el.get(0).getLastName().equals(lastName));
 
 			h2Interaction.dropSchema();
+			h2Interaction.dropDatabase();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,7 +107,7 @@ public class AppTest extends TestCase {
 		}
 	}
 
-	public void updateEmployeeRecord() {
+	public void testUpdateEmployeeRecord() {
 		try {
 			H2Interaction h2Interaction = H2Interaction.getH2Interaction();
 			h2Interaction.createSchema();
@@ -131,7 +135,36 @@ public class AppTest extends TestCase {
 			assertTrue(updatedEl.get(0).getLastName().equals(updatedLastName));
 
 			h2Interaction.dropSchema();
+			h2Interaction.dropDatabase();
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
 
+	public void testDeleteEmployeeRecord() {
+		try {
+			H2Interaction h2Interaction = H2Interaction.getH2Interaction();
+			h2Interaction.createSchema();
+			String firstName = "Tom";
+			String lastName = "Greg";
+			String updatedLastName = "Gregman";
+			ArrayList<Employee> employeeList = new ArrayList<Employee>();
+			Employee employee = new Employee();
+			employee.setFirstName(firstName);
+			employee.setLastName(lastName);
+			employeeList.add(employee);
+
+			h2Interaction.insertEmployeeRecords(employeeList);
+			ArrayList<Employee> el = h2Interaction.getEmployeeRecords();
+			assertTrue(el.size() == 1);
+
+			h2Interaction.deleteEmployeeRecords(el);
+			ArrayList<Employee> records = h2Interaction.getEmployeeRecords();
+			assertTrue(records.size() == 0);
+
+			h2Interaction.dropSchema();
+			h2Interaction.dropDatabase();
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);

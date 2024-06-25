@@ -33,8 +33,9 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-swing</artifactId>
-			<version>22.0.1</version>
+			<version>12.0.2</version>
 		</dependency>
+
 
 	</dependencies>
 </project>
