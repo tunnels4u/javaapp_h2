@@ -8,8 +8,6 @@ import java.util.ResourceBundle;
 
 import org.h2.jdbcx.JdbcDataSource;
 
-import com.softwaretunnel.javaapp_h2.Properties;
-
 public class H2Interaction {
 
 	private static H2Interaction h2Interaction = new H2Interaction();
@@ -68,7 +66,19 @@ public class H2Interaction {
 	public void dropSchema() throws Exception {
 		try {
 
-			connection.createStatement().execute("DROP SCHEMA IF EXISTS " + resourceBundle.getString("SCHEMA_NAME") + " CASCADE");
+			connection.createStatement()
+					.execute("DROP SCHEMA IF EXISTS " + resourceBundle.getString("SCHEMA_NAME") + " CASCADE");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public void dropDatabase() throws Exception {
+		try {
+			connection.createStatement().execute("DROP ALL OBJECTS DELETE FILES");
+			connection.createStatement().execute("SHUTDOWN");
+			connection = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -78,8 +88,9 @@ public class H2Interaction {
 	public boolean doesSchemaExists() throws Exception {
 		try {
 
-			ResultSet rs = connection.createStatement().executeQuery(
-					"SELECT * FROM INFORMATION_SCHEMA.SCHEMATA  WHERE SCHEMA_NAME = '" + resourceBundle.getString("SCHEMA_NAME") + "'");
+			ResultSet rs = connection.createStatement()
+					.executeQuery("SELECT * FROM INFORMATION_SCHEMA.SCHEMATA  WHERE SCHEMA_NAME = '"
+							+ resourceBundle.getString("SCHEMA_NAME") + "'");
 			if (rs.next() && rs.getString("SCHEMA_NAME").equals(resourceBundle.getString("SCHEMA_NAME"))) {
 				return true;
 			}

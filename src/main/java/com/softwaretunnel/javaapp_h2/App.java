@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +27,8 @@ public class App {
 	JButton dropSchemaButton;
 	JButton createSchemaButton;
 	JButton createDBButton;
+	JButton dropDBButton;
+	ResourceBundle resourceBundle = ResourceBundle.getBundle("system");
 
 	public static void main(String[] args) {
 		new App().createGUI();
@@ -38,9 +41,10 @@ public class App {
 		createDBButton = createDatabaseButton(jl);
 		frame.add(createDBButton);
 		this.dropSchemaButton = dropSchemaButton(jl);
-		dropSchemaButton.setVisible(false);
 		this.createSchemaButton = createSchemaButton(jl);
+		this.dropDBButton = dropDBButton(jl);
 		frame.add(createSchemaButton);
+		frame.add(dropDBButton);
 		frame.add(dropSchemaButton);
 		frame.add(jl);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -56,6 +60,7 @@ public class App {
 		try {
 			if (H2Interaction.doesH2DBExists()) {
 				createDBButton.setVisible(false);
+				dropDBButton.setVisible(true);
 				if (H2Interaction.getH2Interaction().doesSchemaExists()) {
 					dropSchemaButton.setVisible(true);
 					createSchemaButton.setVisible(false);
@@ -65,6 +70,9 @@ public class App {
 				}
 			} else {
 				createDBButton.setVisible(true);
+				dropDBButton.setVisible(false);
+				dropSchemaButton.setVisible(false);
+				createSchemaButton.setVisible(false);
 			}
 
 		} catch (Exception e) {
@@ -85,6 +93,7 @@ public class App {
 				if (createDatabase(jl)) {
 					createSchemaButton.setVisible(true);
 					createDBButton.setVisible(false);
+					dropDBButton.setVisible(true);
 				} else {
 					createDBButton.setVisible(true);
 				}
@@ -121,10 +130,27 @@ public class App {
 		return dropSchemaButton;
 	}
 
+	public JButton dropDBButton(JLabel jl) {
+		JButton dropDBButton = new JButton("Drop Database");
+		dropDBButton.setBounds(50, 100, 150, 30);
+		dropDBButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (dropDB(jl)) {
+					dropDBButton.setVisible(false);
+					createDBButton.setVisible(true);
+					dropSchemaButton.setVisible(false);
+					createSchemaButton.setVisible(false);
+
+				}
+			}
+		});
+		return dropDBButton;
+	}
+
 	public boolean createDatabase(JLabel jl) {
 		try {
 			H2Interaction.getH2Interaction();
-			jl.setText("Database Created at :: " + Properties.H2_PATH);
+			jl.setText("Database Created at :: " + resourceBundle.getString("H2_PATH"));
 			return true;
 		} catch (Exception exception) {
 			jl.setText(ErrorMessage.DB_CREATION_FAILED.message);
@@ -135,7 +161,7 @@ public class App {
 	public boolean createSchema(JLabel jl) {
 		try {
 			H2Interaction.getH2Interaction().createSchema();
-			jl.setText("Schema Created with file ::" + Properties.H2_SCHEMA);
+			jl.setText("Schema Created with file ::" + resourceBundle.getString("H2_SCHEMA"));
 			return true;
 		} catch (Exception exception) {
 			jl.setText(ErrorMessage.SCHEMA_CREATION_FAILED.message);
@@ -146,7 +172,7 @@ public class App {
 	public boolean dropSchema(JLabel jl) {
 		try {
 			H2Interaction.getH2Interaction().dropSchema();
-			jl.setText(Properties.SCHEMA_NAME + " Schema dropped ");
+			jl.setText(resourceBundle.getString("SCHEMA_NAME") + " Schema dropped ");
 			return true;
 		} catch (Exception exception) {
 			jl.setText(ErrorMessage.SCHEMA_DROP_FAILED.message);
@@ -154,8 +180,19 @@ public class App {
 		}
 	}
 
+	public boolean dropDB(JLabel jl) {
+		try {
+			H2Interaction.getH2Interaction().dropDatabase();
+			jl.setText("Database dropped ");
+			return true;
+		} catch (Exception exception) {
+			jl.setText(ErrorMessage.DATABASE_DROP_FAILED.message);
+			return false;
+		}
+	}
+
 	public void createBackground(JFrame jf) {
-		ImageIcon background = new ImageIcon(Properties.IMAGES_PATH + "tunnel.jpg");
+		ImageIcon background = new ImageIcon(resourceBundle.getString("IMAGES_PATH") + "tunnel.jpg");
 		Image img = background.getImage();
 		Image temp = img.getScaledInstance(800, 1000, Image.SCALE_SMOOTH);
 		background = new ImageIcon(temp);

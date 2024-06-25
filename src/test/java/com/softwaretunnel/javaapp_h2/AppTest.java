@@ -13,11 +13,11 @@ import junit.framework.TestSuite;
  */
 
 public class AppTest extends TestCase {
-	
-	
+
 	public AppTest() {
-	
+
 	}
+
 	/**
 	 * Create the test case
 	 *
@@ -50,7 +50,7 @@ public class AppTest extends TestCase {
 			assertTrue(false);
 		}
 	}
-	
+
 	public void testDropSchema() {
 		try {
 			H2Interaction h2Interaction = H2Interaction.getH2Interaction();
@@ -62,7 +62,7 @@ public class AppTest extends TestCase {
 			assertTrue(false);
 		}
 	}
-	
+
 	public void testCreateSchema() {
 		try {
 			H2Interaction h2Interaction = H2Interaction.getH2Interaction();
@@ -74,8 +74,17 @@ public class AppTest extends TestCase {
 			assertTrue(false);
 		}
 	}
-	
 
+	public void testDropDatabase() {
+		try {
+			H2Interaction h2Interaction = H2Interaction.getH2Interaction();
+			h2Interaction.dropDatabase();
+			assertFalse(h2Interaction.doesH2DBExists());
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
 
 	public void dropSchema() {
 
