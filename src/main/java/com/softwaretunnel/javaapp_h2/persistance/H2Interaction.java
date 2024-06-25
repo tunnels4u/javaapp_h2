@@ -4,9 +4,14 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.h2.jdbcx.JdbcDataSource;
+
+import com.softwaretunnel.javaapp_h2.persistance.domain.Employee;
 
 public class H2Interaction {
 
@@ -19,7 +24,6 @@ public class H2Interaction {
 
 	public static boolean doesH2DBExists() {
 		String path = resourceBundle.getString("H2_PATH") + "h2db.mv.db";
-		System.out.println(path);
 		File dbFile = new File(path);
 		if (dbFile.exists()) {
 			return true;
@@ -99,6 +103,63 @@ public class H2Interaction {
 			throw e;
 		}
 		return false;
+	}
+
+	public void insertEmployeeRecords(List<Employee> employeeList) throws Exception {
+
+		try {
+			Statement statement = connection.createStatement();
+			for (Employee employee : employeeList) {
+
+				statement.addBatch("INSERT INTO TUNNELDATASCHEMA.EMPLOYEE (First_Name,Last_Name) VALUES ( " + "'"
+						+ employee.getFirstName() + "'," + "'" + employee.getLastName() + "')");
+			}
+			statement.executeBatch();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
+	public void updateEmployeeRecords(List<Employee> employeeList) throws Exception {
+
+		try {
+			Statement statement = connection.createStatement();
+			for (Employee employee : employeeList) {
+
+				statement.addBatch("UPDATE TUNNELDATASCHEMA.EMPLOYEE SET " + "First_Name = '" + employee.getFirstName()
+						+ "'," + "Last_Name = '" + employee.getLastName() + "'" + "WHERE ID = " + employee.getID());
+
+				System.out.println(statement);
+			}
+			statement.executeBatch();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
+	public ArrayList<Employee> getEmployeeRecords() throws Exception {
+		ArrayList<Employee> employeeList = new ArrayList<Employee>();
+		try {
+			ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM TUNNELDATASCHEMA.EMPLOYEE");
+
+			while (rs.next()) {
+				Employee employee = new Employee();
+				employee.setID(rs.getInt("ID"));
+				employee.setFirstName(rs.getString("First_Name"));
+				employee.setLastName(rs.getString("Last_Name"));
+				employeeList.add(employee);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return employeeList;
 	}
 
 	public void releaseResources() {
