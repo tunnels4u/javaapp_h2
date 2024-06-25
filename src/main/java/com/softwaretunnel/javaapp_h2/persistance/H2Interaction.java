@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -12,14 +13,14 @@ import com.softwaretunnel.javaapp_h2.Properties;
 public class H2Interaction {
 
 	private static H2Interaction h2Interaction = new H2Interaction();
+	private static ResourceBundle resourceBundle = ResourceBundle.getBundle("system");
 	private static Connection connection;
 
 	private H2Interaction() {
-
 	}
 
 	public static boolean doesH2DBExists() {
-		String path = Properties.H2_PATH + "h2db.mv.db";
+		String path = resourceBundle.getString("H2_PATH") + "h2db.mv.db";
 		System.out.println(path);
 		File dbFile = new File(path);
 		if (dbFile.exists()) {
@@ -43,7 +44,7 @@ public class H2Interaction {
 	public Connection createDatabaseAndConnection() throws Exception {
 		JdbcDataSource ds = new JdbcDataSource();
 		Connection newConnection = null;
-		ds.setURL("jdbc:h2:" + Properties.H2_PATH + "h2db");
+		ds.setURL("jdbc:h2:" + resourceBundle.getString("H2_PATH") + "h2db");
 		ds.setUser("sa");
 		ds.setPassword("sa");
 		try {
@@ -57,7 +58,7 @@ public class H2Interaction {
 
 	public void createSchema() throws Exception {
 		try {
-			connection.createStatement().execute("RUNSCRIPT FROM '" + Properties.H2_SCHEMA + "'");
+			connection.createStatement().execute("RUNSCRIPT FROM '" + resourceBundle.getString("H2_SCHEMA") + "'");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -67,7 +68,7 @@ public class H2Interaction {
 	public void dropSchema() throws Exception {
 		try {
 
-			connection.createStatement().execute("DROP SCHEMA " + Properties.SCHEMA_NAME + " CASCADE");
+			connection.createStatement().execute("DROP SCHEMA IF EXISTS " + resourceBundle.getString("SCHEMA_NAME") + " CASCADE");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -78,8 +79,8 @@ public class H2Interaction {
 		try {
 
 			ResultSet rs = connection.createStatement().executeQuery(
-					"SELECT * FROM INFORMATION_SCHEMA.SCHEMATA  WHERE SCHEMA_NAME = '" + Properties.SCHEMA_NAME + "'");
-			if (rs.next() && rs.getString("SCHEMA_NAME").equals(Properties.SCHEMA_NAME)) {
+					"SELECT * FROM INFORMATION_SCHEMA.SCHEMATA  WHERE SCHEMA_NAME = '" + resourceBundle.getString("SCHEMA_NAME") + "'");
+			if (rs.next() && rs.getString("SCHEMA_NAME").equals(resourceBundle.getString("SCHEMA_NAME"))) {
 				return true;
 			}
 		} catch (Exception e) {
