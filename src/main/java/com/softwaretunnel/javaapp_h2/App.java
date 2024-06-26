@@ -21,6 +21,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.ButtonUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -363,6 +364,12 @@ public class App {
 
 	public JButton getRemoveButton() {
 		JButton deleteRowButton = new JButton("Delete");
+		deleteRowButton.setOpaque(true);
+		deleteRowButton.setContentAreaFilled(true);
+		deleteRowButton.setBorderPainted(false);
+		deleteRowButton.setFocusPainted(false);
+		deleteRowButton.setForeground(Color.RED);
+		deleteRowButton.setBackground(Color.GRAY);
 //		deleteRowButton.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent actionEvent) {
 //				JTable employeeTable = (JTable) actionEvent.getSource();
@@ -382,7 +389,7 @@ public class App {
 				int row, int column) {
 
 			JButton jbutton = (JButton) value;
-			jbutton.setBackground(Color.RED);
+			//jbutton.setBackground(Color.RED);
 			
 
 			// deleteRowButton.setOpaque(true);
