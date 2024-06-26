@@ -1,6 +1,7 @@
 package com.softwaretunnel.javaapp_h2;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,8 +13,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.softwaretunnel.javaapp_h2.persistance.H2Interaction;
 
@@ -46,12 +55,16 @@ public class App {
 		frame.add(createSchemaButton);
 		frame.add(dropDBButton);
 		frame.add(dropSchemaButton);
+
+		JTable jtable = createTable();
+		frame.setContentPane(new JScrollPane(jtable));
+
 		frame.add(jl);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.addWindowListener(getWindowListener());
 		createBackground(frame);
 		frame.setSize(800, 800);
-		frame.setLayout(null);
+		// frame.setLayout(null);
 		renderFrame(jl);
 		frame.setVisible(true);
 	}
@@ -255,5 +268,126 @@ public class App {
 			}
 
 		};
+	}
+
+	public JTable createTestTable() {
+		String[] columnNames = { "First Name", "Last Name", "Test1" };
+		Object[][] data = { { "Homer", "Simpson", getRemoveButton() }, { "Madge", "Simpson", getRemoveButton() },
+				{ "Bart", "Simpson", getRemoveButton() }, { "Lisa", "Simpson", getRemoveButton() }, };
+
+		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		/*
+		 * {
+		 * 
+		 * public int getColumnCount() { return 3; }
+		 * 
+		 * public int getRowCount() { return 4; }
+		 * 
+		 * public Object getValueAt(int row, int col) { return new Integer(row * col); }
+		 * 
+		 * public boolean isCellEditable(int row, int col) { return true; } };
+		 */
+		JTable table = new JTable(model) {
+			public boolean isCellEditable(int row, int column) {
+				if (column == 2) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		};
+		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
+		table.getColumn("Test1").setCellRenderer(buttonRenderer);
+		// table.setEditingColumn(3);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		return table;
+
+	}
+	
+	public JTable createTable() {
+		String[] columnNames = { "First Name", "Last Name", "Test1" };
+		Object[][] data = { { "Homer", "Simpson", getRemoveButton() }, { "Madge", "Simpson", getRemoveButton() },
+				{ "Bart", "Simpson", getRemoveButton() }, { "Lisa", "Simpson", getRemoveButton() }, };
+
+	    JTable table = new JTable(data, columnNames){
+			public boolean isCellEditable(int row, int column) {
+				if (column == 2) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		};
+		
+		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
+		table.getColumn("Test1").setCellRenderer(buttonRenderer);
+		
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt) {
+		        int row = table.rowAtPoint(evt.getPoint());
+		        int col = table.columnAtPoint(evt.getPoint());
+		        if (col==2) {
+		           System.out.println("I am here"+ table.getValueAt(row,0));
+		           
+		        }
+		    }
+		});
+//		table.setCellSelectionEnabled(true);
+//
+//	    ListSelectionModel cellSelectionModel = table.getSelectionModel();
+//	    cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//
+//	    cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+//	    	
+//	      public void valueChanged(ListSelectionEvent e) {
+//	        String selectedData = null;
+//
+//	        int[] selectedRow = table.getSelectedRows();
+//	        int[] selectedColumns = table.getSelectedColumns();
+//
+//	        for (int i = 0; i < selectedRow.length; i++) {
+//	          for (int j = 0; j < selectedColumns.length; j++) {
+//	            selectedData = (String) table.getValueAt(selectedRow[i], selectedColumns[j]);
+//	          }
+//	        }
+//	        System.out.println("Selected: " + selectedData);
+//	      }
+//
+//	    });
+//
+//	    frame.add(new JScrollPane(table));
+		return table;
+
+	}
+
+	public JButton getRemoveButton() {
+		JButton deleteRowButton = new JButton("Delete");
+//		deleteRowButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent actionEvent) {
+//				JTable employeeTable = (JTable) actionEvent.getSource();
+//				int modelRow = Integer.valueOf(actionEvent.getActionCommand());
+//				((DefaultTableModel) employeeTable.getModel()).removeRow(modelRow);
+//				System.out.println("button");
+//			}
+//		});
+//		deleteRowButton.setOpaque(true);
+		return deleteRowButton;
+
+	}
+
+	private static class JTableButtonRenderer implements TableCellRenderer {
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+
+			JButton jbutton = (JButton) value;
+			jbutton.setBackground(Color.RED);
+			
+
+			// deleteRowButton.setOpaque(true);
+			return jbutton;
+		}
+
 	}
 }
