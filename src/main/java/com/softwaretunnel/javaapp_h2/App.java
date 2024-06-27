@@ -310,7 +310,8 @@ public class App {
 		Object[][] data = { { "Homer", "Simpson", getRemoveButton() }, { "Madge", "Simpson", getRemoveButton() },
 				{ "Bart", "Simpson", getRemoveButton() }, { "Lisa", "Simpson", getRemoveButton() }, };
 
-	    JTable table = new JTable(data, columnNames){
+		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		JTable table = new JTable(model){
 			public boolean isCellEditable(int row, int column) {
 				if (column == 2) {
 					return false;
@@ -330,6 +331,7 @@ public class App {
 		        int col = table.columnAtPoint(evt.getPoint());
 		        if (col==2) {
 		           System.out.println("I am here"+ table.getValueAt(row,0));
+		           ((DefaultTableModel)table.getModel()).removeRow(row);
 		           
 		        }
 		    }
@@ -370,15 +372,7 @@ public class App {
 		deleteRowButton.setFocusPainted(false);
 		deleteRowButton.setForeground(Color.RED);
 		deleteRowButton.setBackground(Color.GRAY);
-//		deleteRowButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent actionEvent) {
-//				JTable employeeTable = (JTable) actionEvent.getSource();
-//				int modelRow = Integer.valueOf(actionEvent.getActionCommand());
-//				((DefaultTableModel) employeeTable.getModel()).removeRow(modelRow);
-//				System.out.println("button");
-//			}
-//		});
-//		deleteRowButton.setOpaque(true);
+        // actionListener here won't work since this button is used inside a table with a cell renderer
 		return deleteRowButton;
 
 	}
