@@ -63,25 +63,10 @@ public class App {
 		this.addEmployeeButton = getAddButton(jl);
 
 		jtable = createTable();
-		JPanel panel = new JPanel();
-		//panel.setSize(610, 410);  
-		//panel.setLayout(new GridLayout(13, 6, 10, 0));  
-		panel.add(jtable);
-		//panel.setBounds(50, 100, 200, 100);
-		//panel.setBounds(50,200,300,300);
-
-		//panel.setLayout(null);
-		JScrollPane jScrollPane=new JScrollPane(panel);
-//		jScrollPane.setMaximumSize(new Dimension(100,100));
-		//jScrollPane.setMinimumSize(new Dimension(10,10));
-		jScrollPane.setBounds(50,200,300,300);
-		//jScrollPane.setOpaque(true);
-		//jScrollPane.setLayout(null);
-		//jScrollPane.setSize(100, 50);
-		//frame.setContentPane(jScrollPane);
+		JScrollPane jScrollPane=new JScrollPane(jtable);
+		jScrollPane.setBounds(100,300,400,200);
+		jScrollPane.setOpaque(false);
 		frame.add(jScrollPane);
-		//frame.getContentPane().setPreferredSize(new Dimension(100, 30));
-		frame.pack();
 		frame.add(addEmployeeButton);
 		frame.add(createSchemaButton);
 		frame.add(dropDBButton);
@@ -354,7 +339,8 @@ public class App {
 		};
 		
 		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
-	    //table.setBounds(50,200,300,300);
+		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    //table.setBounds(100,300,250,150);
 		table.getColumn("Test1").setCellRenderer(buttonRenderer);
 	    //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	    table.setBackground(Color.RED);
