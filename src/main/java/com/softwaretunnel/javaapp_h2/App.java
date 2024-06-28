@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
@@ -29,6 +32,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.softwaretunnel.javaapp_h2.persistance.H2Interaction;
+import com.softwaretunnel.javaapp_h2.persistance.domain.Employee;
 
 import javafx.scene.layout.Border;
 
@@ -62,9 +66,9 @@ public class App {
 		this.dropDBButton = dropDBButton(jl);
 		this.addEmployeeButton = getAddButton(jl);
 
-		jtable = createTable();
-		JScrollPane jScrollPane=new JScrollPane(jtable);
-		jScrollPane.setBounds(100,300,400,200);
+		jtable = createTable(jl);
+		JScrollPane jScrollPane = new JScrollPane(jtable);
+		jScrollPane.setBounds(100, 300, 400, 200);
 		jScrollPane.setOpaque(false);
 		frame.add(jScrollPane);
 		frame.add(addEmployeeButton);
@@ -74,10 +78,10 @@ public class App {
 		frame.add(jl);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.addWindowListener(getWindowListener());
-		createBackground(frame);		
+		createBackground(frame);
 		frame.setSize(800, 800);
-	    //frame.setLayout(null);
-		//frame.setLayout(new GridLayout(1,3));    
+		// frame.setLayout(null);
+		// frame.setLayout(new GridLayout(1,3));
 
 		renderFrame(jl);
 		frame.setVisible(true);
@@ -163,7 +167,7 @@ public class App {
 		dropDBButton.setContentAreaFilled(true);
 		dropDBButton.setBorderPainted(false);
 		dropDBButton.setFocusPainted(false);
-        dropDBButton.setBounds(50, 100, 150, 30);
+		dropDBButton.setBounds(50, 100, 150, 30);
 		dropDBButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (dropDB(jl)) {
@@ -321,43 +325,92 @@ public class App {
 		return table;
 
 	}
-	
-	public JTable createTable() {
-		String[] columnNames = { "First Name", "Last Name", "Test1" };
-		Object[][] data = { { "Homer", "Simpson", getRemoveButton() }, { "Madge", "Simpson", getRemoveButton() },
-				{ "Bart", "Simpson", getRemoveButton() }, { "Lisa", "Simpson", getRemoveButton() }, };
+
+	public JTable createTable(JLabel jl) {
+		String[] columnNames = { "Employee ID", "First Name", "Last Name", "Perform Save Action",
+				"Perform Delete Action" };
+		Object[][] data=null;
+//		Object[][] data = { { null, "Homer", "Simpson", getSaveButton(), getRemoveButton() },
+//				{ null, "Madge", "Simpson", getSaveButton(), getRemoveButton() },
+//				{ null, "Bart", "Simpson", getSaveButton(), getRemoveButton() },
+//				{ null, "Lisa", "Simpson", getSaveButton(), getRemoveButton() }, };
+
+		try {
+			ArrayList<Employee> employees = H2Interaction.getH2Interaction().getEmployeeRecords();
+			data = new Object[employees.size()][5];
+			Iterator<Employee> employeeIterator=employees.iterator();
+			for(int i=0; i<employees.size();i++) {
+				data[i][0]=employees.get(i).getID();
+				data[i][1]=employees.get(i).getFirstName();
+				data[i][2]=employees.get(i).getLastName();
+				data[i][3]=getSaveButton();
+				data[i][4]=getRemoveButton();
+			}
+//			Arrays.stream(data).forEach((i) -> {
+//		        Arrays.stream(i).forEach((j) -> {
+//		        	data[i][j]=employees.get(j);
+//		        });
+//		        System.out.println();
+//		    });
+		} catch (Exception e) {
+			e.printStackTrace();
+			jl.setText(ErrorMessage.FETCH_FAILED.message);
+
+		}
 
 		DefaultTableModel model = new DefaultTableModel(data, columnNames);
-		JTable table = new JTable(model){
+		JTable table = new JTable(model) {
 			public boolean isCellEditable(int row, int column) {
-				if (column == 2) {
+				if (column == 0 || column == 3 || column == 4) {
 					return false;
 				} else {
 					return true;
 				}
 			}
 		};
-		
+
 		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
-		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	    //table.setBounds(100,300,250,150);
-		table.getColumn("Test1").setCellRenderer(buttonRenderer);
-	    //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	    table.setBackground(Color.RED);
-	    table.setOpaque(false);
-	    
-	    //table.setLayout(null);
+		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		// table.setBounds(100,300,250,150);
+		table.getColumn("Perform Delete Action").setCellRenderer(buttonRenderer);
+		table.getColumn("Perform Save Action").setCellRenderer(buttonRenderer);
+		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setBackground(Color.RED);
+		table.setOpaque(false);
+
+		// table.setLayout(null);
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
-		    @Override
-		    public void mouseClicked(java.awt.event.MouseEvent evt) {
-		        int row = table.rowAtPoint(evt.getPoint());
-		        int col = table.columnAtPoint(evt.getPoint());
-		        if (col==2) {
-		           System.out.println("I am here"+ table.getValueAt(row,0));
-		           ((DefaultTableModel)table.getModel()).removeRow(row);
-		           
-		        }
-		    }
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				int row = table.rowAtPoint(evt.getPoint());
+				int col = table.columnAtPoint(evt.getPoint());
+				if (col == 4) {
+					System.out.println("I am here" + table.getValueAt(row, 1));
+					((DefaultTableModel) table.getModel()).removeRow(row);
+				}
+				if (col == 3) {
+					System.out.println("I am here" + table.getValueAt(row, 1));
+					Employee employee = new Employee();
+					employee.setID((Integer) table.getValueAt(row, 0));
+					employee.setFirstName((String) table.getValueAt(row, 1));
+					employee.setLastName((String) table.getValueAt(row, 2));
+					if (table.getValueAt(row, 0) == null) {
+						try {
+							H2Interaction.getH2Interaction().insertEmployeeRecords(employee);
+						} catch (Exception e) {
+							jl.setText(ErrorMessage.INSERT_FAILED.message);
+
+						}
+					} else {
+						try {
+							H2Interaction.getH2Interaction().updateEmployeeRecords(employee);
+						} catch (Exception e) {
+							jl.setText(ErrorMessage.UPDATE_FAILED.message);
+
+						}
+					}
+				}
+			}
 		});
 //		table.setCellSelectionEnabled(true);
 //
@@ -395,11 +448,26 @@ public class App {
 		deleteRowButton.setFocusPainted(false);
 		deleteRowButton.setForeground(Color.RED);
 		deleteRowButton.setBackground(Color.GRAY);
-        // actionListener here won't work since this button is used inside a table with a cell renderer
+		// actionListener here won't work since this button is used inside a table with
+		// a cell renderer
 		return deleteRowButton;
 
 	}
-	
+
+	public JButton getSaveButton() {
+		JButton deleteRowButton = new JButton("Save");
+		deleteRowButton.setOpaque(true);
+		deleteRowButton.setContentAreaFilled(true);
+		deleteRowButton.setBorderPainted(false);
+		deleteRowButton.setFocusPainted(false);
+		deleteRowButton.setForeground(Color.GREEN);
+		deleteRowButton.setBackground(Color.GRAY);
+		// actionListener here won't work since this button is used inside a table with
+		// a cell renderer
+		return deleteRowButton;
+
+	}
+
 	public JButton getAddButton(JLabel label) {
 		JButton addRowButton = new JButton("Add");
 		addRowButton.setOpaque(true);
@@ -411,8 +479,8 @@ public class App {
 		addRowButton.setBounds(50, 180, 200, 30);
 		addRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 Object[] row= {"","",getRemoveButton()};
-				((DefaultTableModel)jtable.getModel()).addRow(row);
+				Object[] row = { null, "", "", getSaveButton(), getRemoveButton() };
+				((DefaultTableModel) jtable.getModel()).addRow(row);
 			}
 		});
 		return addRowButton;
@@ -425,8 +493,7 @@ public class App {
 				int row, int column) {
 
 			JButton jbutton = (JButton) value;
-			//jbutton.setBackground(Color.RED);
-			
+			// jbutton.setBackground(Color.RED);
 
 			// deleteRowButton.setOpaque(true);
 			return jbutton;

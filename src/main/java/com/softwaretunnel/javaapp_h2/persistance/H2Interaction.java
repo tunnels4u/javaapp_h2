@@ -105,11 +105,11 @@ public class H2Interaction {
 		return false;
 	}
 
-	public void insertEmployeeRecords(List<Employee> employeeList) throws Exception {
+	public void insertEmployeeRecords(Employee...employees ) throws Exception {
 
 		try {
 			Statement statement = connection.createStatement();
-			for (Employee employee : employeeList) {
+			for (Employee employee : employees) {
 
 				statement.addBatch("INSERT INTO TUNNELDATASCHEMA.EMPLOYEE (First_Name,Last_Name) VALUES ( " + "'"
 						+ employee.getFirstName() + "'," + "'" + employee.getLastName() + "')");
@@ -123,11 +123,11 @@ public class H2Interaction {
 
 	}
 
-	public void updateEmployeeRecords(List<Employee> employeeList) throws Exception {
+	public void updateEmployeeRecords(Employee...employees ) throws Exception {
 
 		try {
 			Statement statement = connection.createStatement();
-			for (Employee employee : employeeList) {
+			for (Employee employee : employees) {
 
 				statement.addBatch("UPDATE TUNNELDATASCHEMA.EMPLOYEE SET " + "First_Name = '" + employee.getFirstName()
 						+ "'," + "Last_Name = '" + employee.getLastName() + "'" + "WHERE ID = " + employee.getID());
