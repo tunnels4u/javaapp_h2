@@ -329,22 +329,22 @@ public class App {
 	public JTable createTable(JLabel jl) {
 		String[] columnNames = { "Employee ID", "First Name", "Last Name", "Perform Save Action",
 				"Perform Delete Action" };
-		Object[][] data=null;
+		Object[][] data = null;
+		final ArrayList<Employee> employees = new ArrayList();
 //		Object[][] data = { { null, "Homer", "Simpson", getSaveButton(), getRemoveButton() },
 //				{ null, "Madge", "Simpson", getSaveButton(), getRemoveButton() },
 //				{ null, "Bart", "Simpson", getSaveButton(), getRemoveButton() },
 //				{ null, "Lisa", "Simpson", getSaveButton(), getRemoveButton() }, };
 
 		try {
-			ArrayList<Employee> employees = H2Interaction.getH2Interaction().getEmployeeRecords();
+			employees.addAll(H2Interaction.getH2Interaction().getEmployeeRecords());
 			data = new Object[employees.size()][5];
-			Iterator<Employee> employeeIterator=employees.iterator();
-			for(int i=0; i<employees.size();i++) {
-				data[i][0]=employees.get(i).getID();
-				data[i][1]=employees.get(i).getFirstName();
-				data[i][2]=employees.get(i).getLastName();
-				data[i][3]=getSaveButton();
-				data[i][4]=getRemoveButton();
+			for (int i = 0; i < employees.size(); i++) {
+				data[i][0] = employees.get(i).getID();
+				data[i][1] = employees.get(i).getFirstName();
+				data[i][2] = employees.get(i).getLastName();
+				data[i][3] = getSaveButton();
+				data[i][4] = getRemoveButton();
 			}
 //			Arrays.stream(data).forEach((i) -> {
 //		        Arrays.stream(i).forEach((j) -> {
@@ -386,7 +386,17 @@ public class App {
 				int col = table.columnAtPoint(evt.getPoint());
 				if (col == 4) {
 					System.out.println("I am here" + table.getValueAt(row, 1));
-					((DefaultTableModel) table.getModel()).removeRow(row);
+					if (table.getValueAt(row, 0) != null) {
+						try {
+							H2Interaction.getH2Interaction().deleteEmployeeRecords(employees.get(row));
+							((DefaultTableModel) table.getModel()).removeRow(row);
+						} catch (Exception e) {
+							jl.setText(ErrorMessage.DELETE_FAILED.message);
+
+						}
+					} else {
+						((DefaultTableModel) table.getModel()).removeRow(row);
+					}
 				}
 				if (col == 3) {
 					System.out.println("I am here" + table.getValueAt(row, 1));

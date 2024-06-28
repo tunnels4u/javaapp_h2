@@ -142,11 +142,11 @@ public class H2Interaction {
 
 	}
 
-	public void deleteEmployeeRecords(List<Employee> employeeList) throws Exception {
+	public void deleteEmployeeRecords(Employee... employees) throws Exception {
 
 		try {
 			Statement statement = connection.createStatement();
-			for (Employee employee : employeeList) {
+			for (Employee employee : employees) {
 
 				statement.addBatch("DELETE FROM TUNNELDATASCHEMA.EMPLOYEE WHERE ID = " + employee.getID());
 
