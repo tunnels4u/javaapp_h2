@@ -2,6 +2,8 @@ package com.softwaretunnel.javaapp_h2;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -26,6 +29,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.softwaretunnel.javaapp_h2.persistance.H2Interaction;
+
+import javafx.scene.layout.Border;
 
 /**
  * Data Tunnel App
@@ -38,6 +43,8 @@ public class App {
 	JButton createSchemaButton;
 	JButton createDBButton;
 	JButton dropDBButton;
+	JButton addEmployeeButton;
+	JTable jtable;
 	ResourceBundle resourceBundle = ResourceBundle.getBundle("system");
 
 	public static void main(String[] args) {
@@ -53,19 +60,40 @@ public class App {
 		this.dropSchemaButton = dropSchemaButton(jl);
 		this.createSchemaButton = createSchemaButton(jl);
 		this.dropDBButton = dropDBButton(jl);
+		this.addEmployeeButton = getAddButton(jl);
+
+		jtable = createTable();
+		JPanel panel = new JPanel();
+		//panel.setSize(610, 410);  
+		//panel.setLayout(new GridLayout(13, 6, 10, 0));  
+		panel.add(jtable);
+		//panel.setBounds(50, 100, 200, 100);
+		//panel.setBounds(50,200,300,300);
+
+		//panel.setLayout(null);
+		JScrollPane jScrollPane=new JScrollPane(panel);
+//		jScrollPane.setMaximumSize(new Dimension(100,100));
+		//jScrollPane.setMinimumSize(new Dimension(10,10));
+		jScrollPane.setBounds(50,200,300,300);
+		//jScrollPane.setOpaque(true);
+		//jScrollPane.setLayout(null);
+		//jScrollPane.setSize(100, 50);
+		//frame.setContentPane(jScrollPane);
+		frame.add(jScrollPane);
+		//frame.getContentPane().setPreferredSize(new Dimension(100, 30));
+		frame.pack();
+		frame.add(addEmployeeButton);
 		frame.add(createSchemaButton);
 		frame.add(dropDBButton);
 		frame.add(dropSchemaButton);
-
-		JTable jtable = createTable();
-		frame.setContentPane(new JScrollPane(jtable));
-
 		frame.add(jl);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.addWindowListener(getWindowListener());
-		createBackground(frame);
+		createBackground(frame);		
 		frame.setSize(800, 800);
-		// frame.setLayout(null);
+	    //frame.setLayout(null);
+		//frame.setLayout(new GridLayout(1,3));    
+
 		renderFrame(jl);
 		frame.setVisible(true);
 	}
@@ -146,7 +174,11 @@ public class App {
 
 	public JButton dropDBButton(JLabel jl) {
 		JButton dropDBButton = new JButton("Drop Database");
-		dropDBButton.setBounds(50, 100, 150, 30);
+		dropDBButton.setOpaque(true);
+		dropDBButton.setContentAreaFilled(true);
+		dropDBButton.setBorderPainted(false);
+		dropDBButton.setFocusPainted(false);
+        dropDBButton.setBounds(50, 100, 150, 30);
 		dropDBButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (dropDB(jl)) {
@@ -212,7 +244,7 @@ public class App {
 		background = new ImageIcon(temp);
 		JLabel back = new JLabel(background);
 		back.setLayout(null);
-		back.setBounds(0, 0, 800, 1000);
+		back.setBounds(0, 0, 800, 800);
 		back.setOpaque(false);
 		jf.add(back);
 	}
@@ -322,8 +354,13 @@ public class App {
 		};
 		
 		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
+	    //table.setBounds(50,200,300,300);
 		table.getColumn("Test1").setCellRenderer(buttonRenderer);
-		
+	    //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    table.setBackground(Color.RED);
+	    table.setOpaque(false);
+	    
+	    //table.setLayout(null);
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
 		    @Override
 		    public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -374,6 +411,25 @@ public class App {
 		deleteRowButton.setBackground(Color.GRAY);
         // actionListener here won't work since this button is used inside a table with a cell renderer
 		return deleteRowButton;
+
+	}
+	
+	public JButton getAddButton(JLabel label) {
+		JButton addRowButton = new JButton("Add");
+		addRowButton.setOpaque(true);
+		addRowButton.setContentAreaFilled(true);
+		addRowButton.setBorderPainted(false);
+		addRowButton.setFocusPainted(false);
+		addRowButton.setForeground(Color.GREEN);
+		addRowButton.setBackground(Color.GRAY);
+		addRowButton.setBounds(50, 180, 200, 30);
+		addRowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 Object[] row= {"","",getRemoveButton()};
+				((DefaultTableModel)jtable.getModel()).addRow(row);
+			}
+		});
+		return addRowButton;
 
 	}
 
