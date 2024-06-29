@@ -183,7 +183,7 @@ public class AppTest extends TestCase {
 			ArrayList<Employee> el = h2Interaction.getEmployeeRecords();
 			assertTrue(el.size() == 1);
 
-			h2Interaction.deleteEmployeeRecords((Employee[])el.toArray());
+			h2Interaction.deleteEmployeeRecords((Employee[]) el.toArray());
 			ArrayList<Employee> records = h2Interaction.getEmployeeRecords();
 			assertTrue(records.size() == 0);
 

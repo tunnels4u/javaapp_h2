@@ -105,7 +105,7 @@ public class H2Interaction {
 		return false;
 	}
 
-	public void insertEmployeeRecords(Employee...employees ) throws Exception {
+	public void insertEmployeeRecords(Employee... employees) throws Exception {
 
 		try {
 			Statement statement = connection.createStatement();
@@ -115,7 +115,6 @@ public class H2Interaction {
 						+ employee.getFirstName() + "'," + "'" + employee.getLastName() + "')");
 			}
 			statement.executeBatch();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -123,7 +122,7 @@ public class H2Interaction {
 
 	}
 
-	public void updateEmployeeRecords(Employee...employees ) throws Exception {
+	public void updateEmployeeRecords(Employee... employees) throws Exception {
 
 		try {
 			Statement statement = connection.createStatement();
@@ -161,10 +160,17 @@ public class H2Interaction {
 
 	}
 
-	public ArrayList<Employee> getEmployeeRecords() throws Exception {
+	public ArrayList<Employee> getEmployeeRecords(Integer... ids) throws Exception {
+
+		String WHERE_CLAUSE = "";
+		if (ids.length != 0) {
+			WHERE_CLAUSE = "WHERE ID in (" + getCommaSeperatedValues(ids) + ")";
+		}
+
 		ArrayList<Employee> employeeList = new ArrayList<Employee>();
 		try {
-			ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM TUNNELDATASCHEMA.EMPLOYEE");
+			ResultSet rs = connection.createStatement()
+					.executeQuery("SELECT * FROM TUNNELDATASCHEMA.EMPLOYEE " + WHERE_CLAUSE);
 
 			while (rs.next()) {
 				Employee employee = new Employee();
@@ -189,6 +195,12 @@ public class H2Interaction {
 			e.printStackTrace();
 		}
 
+	}
+
+	private String getCommaSeperatedValues(Integer[] intArray) {
+		String strRep = intArray.toString();
+		strRep = strRep.replace("[", "").replace("]", "").replace(" ", "");
+		return strRep;
 	}
 
 }
