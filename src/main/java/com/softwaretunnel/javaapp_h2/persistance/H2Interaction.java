@@ -149,7 +149,6 @@ public class H2Interaction {
 
 				statement.addBatch("DELETE FROM TUNNELDATASCHEMA.EMPLOYEE WHERE ID = " + employee.getID());
 
-				System.out.println(statement);
 			}
 			statement.executeBatch();
 

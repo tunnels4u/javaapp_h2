@@ -60,38 +60,38 @@ public class App {
 	}
 
 	public void createGUI() {
-		jl = new JLabel();
-		jl.setBounds(50, 50, 1000, 20);
-		jl.setForeground(Color.WHITE);
-		createDBButton = createDatabaseButton(jl);
-		frame.add(createDBButton);
-		this.dropSchemaButton = dropSchemaButton(jl);
-		this.createSchemaButton = createSchemaButton(jl);
-		this.dropDBButton = dropDBButton(jl);
-		this.addEmployeeButton = getAddButton(jl);
+		this.jl = new JLabel();
+		this.jl.setBounds(50, 50, 1000, 20);
+		this.jl.setForeground(Color.WHITE);
 
-		jtable = createTable(jl);
+		this.createDBButton = createDatabaseButton();
+		this.frame.add(createDBButton);
+		this.dropSchemaButton = dropSchemaButton();
+		this.createSchemaButton = createSchemaButton();
+		this.dropDBButton = dropDBButton();
+		this.addEmployeeButton = getAddButton();
+
+		this.jtable = createTable(jl);
 		JScrollPane jScrollPane = new JScrollPane(jtable);
 		jScrollPane.setBounds(50, 300, 700, 200);
 		jScrollPane.setOpaque(false);
-		frame.add(jScrollPane);
-		frame.add(addEmployeeButton);
-		frame.add(createSchemaButton);
-		frame.add(dropDBButton);
-		frame.add(dropSchemaButton);
-		frame.add(jl);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.addWindowListener(getWindowListener());
-		createBackground(frame);
-		frame.setSize(800, 800);
-		// frame.setLayout(null);
-		// frame.setLayout(new GridLayout(1,3));
+		this.frame.add(jScrollPane);
 
-		renderFrameAndData(jl);
-		frame.setVisible(true);
+		this.frame.add(addEmployeeButton);
+		this.frame.add(createSchemaButton);
+		this.frame.add(dropDBButton);
+		this.frame.add(dropSchemaButton);
+		this.frame.add(jl);
+		this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.frame.addWindowListener(getWindowListener());
+		this.frame.add(createBackground());
+		this.frame.setSize(800, 800);
+
+		renderFrameAndData();
+		this.frame.setVisible(true);
 	}
 
-	public void renderFrameAndData(JLabel jl) {
+	public void renderFrameAndData() {
 		try {
 			if (H2Interaction.doesH2DBExists()) {
 				createDBButton.setVisible(false);
@@ -121,16 +121,15 @@ public class App {
 	}
 
 	public void refreshFrame() {
-		// frame.revalidate();
 		frame.repaint();
 	}
 
-	public JButton createDatabaseButton(JLabel jl) {
+	public JButton createDatabaseButton() {
 		JButton createDBButton = new JButton("Create H2 Database");
 		createDBButton.setBounds(50, 100, 150, 30);
 		createDBButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (createDatabase(jl)) {
+				if (createDatabase()) {
 					createSchemaButton.setVisible(true);
 					createDBButton.setVisible(false);
 					dropDBButton.setVisible(true);
@@ -142,12 +141,12 @@ public class App {
 		return createDBButton;
 	}
 
-	public JButton createSchemaButton(JLabel jl) {
+	public JButton createSchemaButton() {
 		JButton schemaButton = new JButton("Create Database Schema ");
 		schemaButton.setBounds(50, 150, 200, 30);
 		schemaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (createSchema(jl)) {
+				if (createSchema()) {
 					schemaButton.setVisible(false);
 					dropSchemaButton.setVisible(true);
 					addEmployeeButton.setVisible(true);
@@ -158,12 +157,12 @@ public class App {
 		return schemaButton;
 	}
 
-	public JButton dropSchemaButton(JLabel jl) {
+	public JButton dropSchemaButton() {
 		JButton dropSchemaButton = new JButton("Drop Database Schema ");
 		dropSchemaButton.setBounds(50, 150, 200, 30);
 		dropSchemaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (dropSchema(jl)) {
+				if (dropSchema()) {
 					dropSchemaButton.setVisible(false);
 					createSchemaButton.setVisible(true);
 					addEmployeeButton.setVisible(false);
@@ -175,12 +174,12 @@ public class App {
 		return dropSchemaButton;
 	}
 
-	public JButton dropDBButton(JLabel jl) {
+	public JButton dropDBButton() {
 		JButton dropDBButton = new JButton("Drop Database");
 		dropDBButton.setBounds(50, 100, 150, 30);
 		dropDBButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (dropDB(jl)) {
+				if (dropDB()) {
 					dropDBButton.setVisible(false);
 					createDBButton.setVisible(true);
 					dropSchemaButton.setVisible(false);
@@ -194,7 +193,54 @@ public class App {
 		return dropDBButton;
 	}
 
-	public boolean createDatabase(JLabel jl) {
+	public JButton getRemoveButton() {
+		JButton deleteRowButton = new JButton("Delete");
+		deleteRowButton.setOpaque(true);
+		deleteRowButton.setContentAreaFilled(true);
+		deleteRowButton.setBorderPainted(false);
+		deleteRowButton.setFocusPainted(false);
+		deleteRowButton.setForeground(Color.RED);
+		deleteRowButton.setBackground(Color.GRAY);
+		/*
+		 * actionListener here won't work since this button is used inside a table with
+		 * a cell renderer
+		 */
+		return deleteRowButton;
+
+	}
+
+	public JButton getSaveButton() {
+		JButton deleteRowButton = new JButton("Save");
+		deleteRowButton.setOpaque(true);
+		deleteRowButton.setContentAreaFilled(true);
+		deleteRowButton.setBorderPainted(false);
+		deleteRowButton.setFocusPainted(false);
+		deleteRowButton.setForeground(Color.GREEN);
+		deleteRowButton.setBackground(Color.GRAY);
+		/*
+		 * actionListener here won't work since this button is used inside a table with
+		 * a cell renderer
+		 */
+		return deleteRowButton;
+
+	}
+
+	public JButton getAddButton() {
+		JButton addRowButton = new JButton("Add Employee");
+		addRowButton.setForeground(Color.GREEN);
+		addRowButton.setBackground(Color.GRAY);
+		addRowButton.setBounds(50, 250, 200, 30);
+		addRowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Object[] row = { null, "", "", getSaveButton(), getRemoveButton() };
+				((DefaultTableModel) jtable.getModel()).addRow(row);
+			}
+		});
+		return addRowButton;
+
+	}
+
+	public boolean createDatabase() {
 		try {
 			H2Interaction.getH2Interaction();
 			jl.setText("Database Created at :: " + resourceBundle.getString("H2_PATH"));
@@ -205,7 +251,7 @@ public class App {
 		}
 	}
 
-	public boolean createSchema(JLabel jl) {
+	public boolean createSchema() {
 		try {
 			H2Interaction.getH2Interaction().createSchema();
 			jl.setText("Schema Created with file ::" + resourceBundle.getString("H2_SCHEMA"));
@@ -216,7 +262,7 @@ public class App {
 		}
 	}
 
-	public boolean dropSchema(JLabel jl) {
+	public boolean dropSchema() {
 		try {
 			H2Interaction.getH2Interaction().dropSchema();
 			jl.setText(resourceBundle.getString("SCHEMA_NAME") + " Schema dropped ");
@@ -227,7 +273,7 @@ public class App {
 		}
 	}
 
-	public boolean dropDB(JLabel jl) {
+	public boolean dropDB() {
 		try {
 			H2Interaction.getH2Interaction().dropDatabase();
 			jl.setText("Database dropped ");
@@ -238,7 +284,7 @@ public class App {
 		}
 	}
 
-	public void createBackground(JFrame jf) {
+	public JLabel createBackground() {
 		ImageIcon background = new ImageIcon(resourceBundle.getString("IMAGES_PATH") + "tunnel.jpg");
 		Image img = background.getImage();
 		Image temp = img.getScaledInstance(800, 1000, Image.SCALE_SMOOTH);
@@ -247,61 +293,7 @@ public class App {
 		back.setLayout(null);
 		back.setBounds(0, 0, 800, 800);
 		back.setOpaque(false);
-		jf.add(back);
-	}
-
-	public WindowListener getWindowListener() {
-
-		return new WindowListener() {
-
-			@Override
-			public void windowClosed(WindowEvent e) {
-				try {
-					H2Interaction.getH2Interaction().releaseResources();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-
-			@Override
-			public void windowOpened(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowActivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-		};
+		return back;
 	}
 
 	public JTable createTable(JLabel jl) {
@@ -323,7 +315,7 @@ public class App {
 		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
 		table.getColumn("Perform Delete Action").setCellRenderer(buttonRenderer);
 		table.getColumn("Perform Save Action").setCellRenderer(buttonRenderer);
-		table.setBackground(Color.RED);
+		table.setBackground(Color.GREEN);
 		table.setOpaque(false);
 
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -411,53 +403,6 @@ public class App {
 		}
 	}
 
-	public JButton getRemoveButton() {
-		JButton deleteRowButton = new JButton("Delete");
-		deleteRowButton.setOpaque(true);
-		deleteRowButton.setContentAreaFilled(true);
-		deleteRowButton.setBorderPainted(false);
-		deleteRowButton.setFocusPainted(false);
-		deleteRowButton.setForeground(Color.RED);
-		deleteRowButton.setBackground(Color.GRAY);
-		/*
-		 * actionListener here won't work since this button is used inside a table with
-		 * a cell renderer
-		 */
-		return deleteRowButton;
-
-	}
-
-	public JButton getSaveButton() {
-		JButton deleteRowButton = new JButton("Save");
-		deleteRowButton.setOpaque(true);
-		deleteRowButton.setContentAreaFilled(true);
-		deleteRowButton.setBorderPainted(false);
-		deleteRowButton.setFocusPainted(false);
-		deleteRowButton.setForeground(Color.GREEN);
-		deleteRowButton.setBackground(Color.GRAY);
-		/*
-		 * actionListener here won't work since this button is used inside a table with
-		 * a cell renderer
-		 */
-		return deleteRowButton;
-
-	}
-
-	public JButton getAddButton(JLabel label) {
-		JButton addRowButton = new JButton("Add Employee");
-		addRowButton.setForeground(Color.GREEN);
-		addRowButton.setBackground(Color.GRAY);
-		addRowButton.setBounds(50, 250, 200, 30);
-		addRowButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Object[] row = { null, "", "", getSaveButton(), getRemoveButton() };
-				((DefaultTableModel) jtable.getModel()).addRow(row);
-			}
-		});
-		return addRowButton;
-
-	}
-
 	private static class JTableButtonRenderer implements TableCellRenderer {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -467,5 +412,59 @@ public class App {
 			return jbutton;
 		}
 
+	}
+
+	public WindowListener getWindowListener() {
+
+		return new WindowListener() {
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+				try {
+					H2Interaction.getH2Interaction().releaseResources();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+		};
 	}
 }
