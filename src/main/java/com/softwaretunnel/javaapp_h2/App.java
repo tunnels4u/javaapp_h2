@@ -328,6 +328,7 @@ public class App {
 						try {
 							H2Interaction.getH2Interaction().deleteEmployeeRecords(employees.get(row));
 							refreshModel();
+							jl.setText(ErrorMessage.DELETE_SUCCESS.message);
 						} catch (Exception e) {
 							jl.setText(ErrorMessage.DELETE_FAILED.message);
 
@@ -345,6 +346,7 @@ public class App {
 						try {
 							H2Interaction.getH2Interaction().insertEmployeeRecords(employee);
 							refreshModel();
+							jl.setText(ErrorMessage.INSERT_SUCCESS.message);
 						} catch (Exception e) {
 							jl.setText(ErrorMessage.INSERT_FAILED.message);
 
@@ -353,6 +355,7 @@ public class App {
 						try {
 							H2Interaction.getH2Interaction().updateEmployeeRecords(employee);
 							refreshModel();
+							jl.setText(ErrorMessage.UPDATE_SUCCESS.message);
 						} catch (Exception e) {
 							jl.setText(ErrorMessage.UPDATE_FAILED.message);
 
