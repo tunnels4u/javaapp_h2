@@ -1,6 +1,7 @@
 # java_h2 tunnel
 
 This is a free to reuse - end to end basic app using java swing and h2 with maven.
+Please also have a look at the license file.
 
 ## How to run it?
 
