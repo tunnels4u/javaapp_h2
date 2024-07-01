@@ -284,6 +284,10 @@ public class App {
 		}
 	}
 
+	/**
+	 * This code snippet was taken from
+	 * https://stackoverflow.com/questions/1466240/how-to-set-an-image-as-a-background-for-frame-in-swing-gui-of-java
+	 */
 	public JLabel createBackground() {
 		ImageIcon background = new ImageIcon(resourceBundle.getString("IMAGES_PATH") + "tunnel.jpg");
 		Image img = background.getImage();
