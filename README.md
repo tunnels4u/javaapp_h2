@@ -4,13 +4,13 @@ This is a free to reuse - end to end basic app using java swing and h2 with mave
 
 ## How to run it?
 
-** You will need **
+**You will need**
 
 - git
 - jdk 17
 - apache-maven-3.9.8 
 
-** Run following commands in your terminal **
+**Run following commands in your terminal**
 
 -  cd path_where_you_wantto_keep_the_project/
 -  git clone https://github.com/tunnels4u/javaapp_h2.git
@@ -18,7 +18,7 @@ This is a free to reuse - end to end basic app using java swing and h2 with mave
 -  mvn compile
 -  mvn exec:java
 
-** Demo **
+**Demo**
 
 - ![Create Database](./java_h2_demo/create_database.png?raw=true "Create Database")
 - ![Create Schema](./java_h2_demo/create_schema.png?raw=true "Create Schema")
