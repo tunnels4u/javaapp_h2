@@ -163,7 +163,7 @@ public class H2Interaction {
 	public ArrayList<Employee> getEmployeeRecords(Integer... ids) throws Exception {
 
 		String WHERE_CLAUSE = "";
-		if (ids.length != 0) {
+		if (ids != null && ids.length != 0) {
 			WHERE_CLAUSE = "WHERE ID in (" + getCommaSeperatedValues(ids) + ")";
 		}
 
