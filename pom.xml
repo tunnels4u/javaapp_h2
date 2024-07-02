@@ -15,6 +15,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<scm>
+		<developerConnection>scm:git:https://github.com/tunnels4u/javaapp_h2.git</developerConnection>
+	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -55,6 +59,12 @@
 				<configuration>
 					<mainClass>com.softwaretunnel.javaapp_h2.App</mainClass>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>3.1.0</version>
 			</plugin>
 		</plugins>
 	</build>
