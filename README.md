@@ -3,7 +3,10 @@
 This is a free to reuse - end to end basic(CRUD) app using "java swing and h2 database" with maven.
 Please also have a look at the license file.
 
-If you find it is useful for you and the community and more end to end applications should be developed, please consider hitting that sponsorship button on the right!
+If you find it is useful for you and the community and more end to end applications should be developed, 
+please consider hitting that sponsorship button on the right!
+or
+if you feel like, just buy me a coffee!
 
 ## How to run it?
 
